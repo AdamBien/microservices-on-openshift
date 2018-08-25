@@ -10,13 +10,16 @@ import javax.inject.Inject;
  * @author airhacks.com
  */
 @Stateless
-public class PIngService {
+public class PingService {
 
     @Inject
     NumberService number;
 
+    @Inject
+    String prefix;
+
     public String message() {
-        return " the number of today is: " + number.number();
+        return this.prefix + " the number of today is: " + number.number();
     }
 
 

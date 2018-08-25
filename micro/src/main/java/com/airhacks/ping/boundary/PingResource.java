@@ -14,7 +14,7 @@ import javax.ws.rs.Path;
 public class PingResource {
 
     @Inject
-    PIngService service;
+    PingService service;
 
     @GET
     public String ping() {
