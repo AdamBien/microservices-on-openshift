@@ -14,8 +14,5 @@ public class Configurator {
     public String expose(InjectionPoint ip) {
         String fieldName = ip.getMember().getName();
         return System.getenv().getOrDefault(fieldName, System.getProperty(fieldName, "!!!"));
-
     }
-
-
 }
