@@ -13,6 +13,6 @@ public class Configurator {
     @Produces
     public String expose(InjectionPoint ip) {
         String fieldName = ip.getMember().getName();
-        return System.getenv().getOrDefault(fieldName, System.getProperty(fieldName, "!!!"));
+        return System.getenv().getOrDefault(fieldName, System.getProperty(fieldName, "!!!!"));
     }
 }
