@@ -19,6 +19,10 @@ public class PingService {
     String prefix;
 
     public String message() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+        }
         return this.prefix + " the number of today is: " + number.number();
     }
 

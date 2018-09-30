@@ -1,6 +1,7 @@
 
 package com.airhacks.ping.boundary;
 
+import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.ws.rs.GET;
 import javax.ws.rs.ProcessingException;
@@ -20,8 +21,11 @@ public class MicroClient {
 
     @PostConstruct
     public void initClient() {
-        Client client = ClientBuilder.newClient();
-        this.microTarget = client.target("http://micro:8080/micro/resources/ping");
+        Client client = ClientBuilder.newBuilder().
+                connectTimeout(200, TimeUnit.MILLISECONDS).
+                readTimeout(500, TimeUnit.MILLISECONDS).
+                build();
+        this.microTarget = client.target("http://localhost:8080/micro/resources/ping");
     }
 
     @GET
