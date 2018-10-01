@@ -3,19 +3,19 @@ package com.airhacks.ping.boundary;
 
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
 import javax.ws.rs.GET;
 import javax.ws.rs.ProcessingException;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  *
  * @author airhacks.com
  */
+@Stateless
 public class MicroClient {
     private WebTarget microTarget;
 
@@ -35,7 +35,7 @@ public class MicroClient {
         } catch (ProcessingException ex) {
             Throwable cause = ex.getCause();
             String message = cause.getClass().getSimpleName() + ":" + cause.getMessage();
-            throw new WebApplicationException(Response.status(503).header("cause", message).build());
+            throw new MicroCommunicationException(message);
         }
     }
 }
