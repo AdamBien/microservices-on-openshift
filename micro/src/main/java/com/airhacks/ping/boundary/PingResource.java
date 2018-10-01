@@ -1,6 +1,9 @@
 package com.airhacks.ping.boundary;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Resource;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -20,16 +23,22 @@ public class PingResource {
     @Inject
     PingService service;
 
+    @Resource
+    ManagedExecutorService mes;
+
     @GET
     public void ping(@Suspended AsyncResponse response) {
         response.setTimeout(500, TimeUnit.MILLISECONDS);
         response.setTimeoutHandler(this::handleTimeout);
-        response.resume(this.service.message());
+
+        supplyAsync(this.service::message, this.mes).
+                thenAccept(response::resume);
+
     }
 
     void handleTimeout(AsyncResponse asyncResponse) {
         Response error = Response.status(503).
-                header("cause", "micro is overloaded, reponse takes longer than 500ms").
+                header("cause", "micro is overloaded, response takes longer than 500ms").
                 build();
         asyncResponse.resume(error);
     }
