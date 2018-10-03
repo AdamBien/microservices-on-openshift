@@ -4,9 +4,11 @@ package com.airhacks.ping.boundary;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Singleton;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -21,9 +23,14 @@ import javax.ws.rs.core.MediaType;
 public class MicroClient {
     private WebTarget microTarget;
 
+    @Resource
+    ManagedExecutorService mes;
+
+
     @PostConstruct
     public void initClient() {
         Client client = ClientBuilder.newBuilder().
+                executorService(mes).
                 connectTimeout(200, TimeUnit.MILLISECONDS).
                 readTimeout(500, TimeUnit.MILLISECONDS).
                 build();
