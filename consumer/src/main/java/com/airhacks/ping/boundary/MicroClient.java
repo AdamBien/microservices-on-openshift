@@ -2,13 +2,13 @@
 package com.airhacks.ping.boundary;
 
 import com.airhacks.breakr.boundary.Breakr;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Singleton;
 import javax.interceptor.Interceptors;
-import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -33,13 +33,15 @@ public class MicroClient {
         this.microTarget = client.target("http://localhost:8080/micro/resources/ping");
     }
 
-    public String ping() {
-        try {
-            return "Enjoy Java EE 8, calling micro -> " + this.microTarget.request(MediaType.TEXT_PLAIN).get(String.class);
-        } catch (ProcessingException ex) {
-            Throwable cause = ex.getCause();
-            String message = cause.getClass().getSimpleName() + ":" + cause.getMessage();
-            throw new MicroCommunicationException(message);
-        }
+    public CompletionStage<String> ping() {
+        return this.microTarget.
+                request(MediaType.TEXT_PLAIN).
+                rx().
+                get(String.class).
+                thenApply(this::prepend);
+    }
+
+    String prepend(String input) {
+        return "Enjoy Java EE 8, calling micro -> " + input;
     }
 }

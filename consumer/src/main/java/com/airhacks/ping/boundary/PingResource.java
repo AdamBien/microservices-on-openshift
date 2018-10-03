@@ -25,8 +25,7 @@ public class PingResource {
     public void ping(@Suspended AsyncResponse response) {
         response.setTimeout(2, TimeUnit.SECONDS);
         response.setTimeoutHandler(this::handleTimeout);
-
-        response.resume("Enjoy Java EE 8, calling micro -> " + this.microClient.ping());
+        this.microClient.ping().thenAccept(response::resume);
     }
 
     void handleTimeout(AsyncResponse asyncResponse) {
