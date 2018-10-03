@@ -25,7 +25,18 @@ public class PingResource {
     public void ping(@Suspended AsyncResponse response) {
         response.setTimeout(2, TimeUnit.SECONDS);
         response.setTimeoutHandler(this::handleTimeout);
-        this.microClient.ping().thenAccept(response::resume);
+        this.microClient.ping().whenComplete((payload, t) -> this.handle(response, payload, t));
+    }
+
+    void handle(AsyncResponse response, String payload, Throwable t) {
+        if (t != null) {
+            Throwable rootCause = t.getCause().getCause();
+            String message = rootCause.getClass().getSimpleName() + ":" + rootCause.getMessage();
+            Response errorResponse = Response.status(503).header("cause", message).build();
+            response.resume(errorResponse);
+        } else {
+            response.resume(payload);
+        }
     }
 
     void handleTimeout(AsyncResponse asyncResponse) {
