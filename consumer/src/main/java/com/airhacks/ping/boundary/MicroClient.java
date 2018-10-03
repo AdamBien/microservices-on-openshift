@@ -1,14 +1,12 @@
 
 package com.airhacks.ping.boundary;
 
-import com.airhacks.breakr.boundary.Breakr;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Singleton;
-import javax.interceptor.Interceptors;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -20,7 +18,6 @@ import javax.ws.rs.core.MediaType;
  */
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-@Interceptors(Breakr.class)
 public class MicroClient {
     private WebTarget microTarget;
 
