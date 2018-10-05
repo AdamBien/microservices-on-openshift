@@ -2,13 +2,16 @@
 package com.airhacks.ping.boundary;
 
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Singleton;
-import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.enterprise.concurrent.ManagedThreadFactory;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -23,12 +26,16 @@ import javax.ws.rs.core.MediaType;
 public class MicroClient {
     private WebTarget microTarget;
 
-    @Resource(mappedName = "java:jboss/ee/concurrency/executor/duke")
-    ManagedExecutorService mes;
+    @Resource
+    ManagedThreadFactory mtf;
 
 
     @PostConstruct
     public void initClient() {
+        ExecutorService mes = new ThreadPoolExecutor(2, 2,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(2),
+                this.mtf);
         Client client = ClientBuilder.newBuilder().
                 executorService(mes).
                 connectTimeout(200, TimeUnit.MILLISECONDS).
