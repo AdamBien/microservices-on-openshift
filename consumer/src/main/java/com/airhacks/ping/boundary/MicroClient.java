@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 public class MicroClient {
     private WebTarget microTarget;
 
-    @Resource
+    @Resource(mappedName = "java:jboss/ee/concurrency/executor/duke")
     ManagedExecutorService mes;
 
 
