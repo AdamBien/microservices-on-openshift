@@ -12,6 +12,7 @@ import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Singleton;
 import javax.enterprise.concurrent.ManagedThreadFactory;
+import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -29,19 +30,28 @@ public class MicroClient {
     @Resource
     ManagedThreadFactory mtf;
 
+    @Inject
+    String host;
+
+    @Inject
+    int maxPoolSize;
+
+    @Inject
+    long connectTimeout;
+
 
     @PostConstruct
     public void initClient() {
-        ExecutorService mes = new ThreadPoolExecutor(2, 2,
+        ExecutorService mes = new ThreadPoolExecutor(2, this.maxPoolSize,
                 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(2),
                 this.mtf);
         Client client = ClientBuilder.newBuilder().
                 executorService(mes).
-                connectTimeout(200, TimeUnit.MILLISECONDS).
+                connectTimeout(this.connectTimeout, TimeUnit.MILLISECONDS).
                 readTimeout(500, TimeUnit.MILLISECONDS).
                 build();
-        this.microTarget = client.target("http://localhost:8080/micro/resources/ping");
+        this.microTarget = client.target("http://" + this.host + ":8080/micro/resources/ping");
     }
 
     public CompletionStage<String> ping() {
