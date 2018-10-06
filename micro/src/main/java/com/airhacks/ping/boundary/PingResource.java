@@ -28,7 +28,7 @@ public class PingResource {
 
     @GET
     public void ping(@Suspended AsyncResponse response) {
-        response.setTimeout(500, TimeUnit.MILLISECONDS);
+        response.setTimeout(1500, TimeUnit.MILLISECONDS);
         response.setTimeoutHandler(this::handleTimeout);
 
         supplyAsync(this.service::message, this.mes).

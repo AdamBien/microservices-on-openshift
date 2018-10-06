@@ -42,6 +42,9 @@ public class MicroClient {
     @Inject
     @DefaultValue("200")
     long connectTimeout;
+    @Inject
+    @DefaultValue("1500")
+    long readTimeout;
 
 
     @PostConstruct
@@ -53,7 +56,7 @@ public class MicroClient {
         Client client = ClientBuilder.newBuilder().
                 executorService(mes).
                 connectTimeout(this.connectTimeout, TimeUnit.MILLISECONDS).
-                readTimeout(500, TimeUnit.MILLISECONDS).
+                readTimeout(this.readTimeout, TimeUnit.MILLISECONDS).
                 build();
         this.microTarget = client.target("http://" + this.host + ":8080/micro/resources/ping");
     }
