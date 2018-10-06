@@ -1,6 +1,7 @@
 
 package com.airhacks.ping.boundary;
 
+import com.airhacks.configuration.boundary.DefaultValue;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -31,12 +32,15 @@ public class MicroClient {
     ManagedThreadFactory mtf;
 
     @Inject
+    @DefaultValue("micro")
     String host;
 
     @Inject
+    @DefaultValue("4")
     int maxPoolSize;
 
     @Inject
+    @DefaultValue("200")
     long connectTimeout;
 
 

@@ -12,8 +12,9 @@ public class Configurator {
 
     @Produces
     public String exposeString(InjectionPoint ip) {
+        DefaultValue defaultValue = ip.getAnnotated().getAnnotation(DefaultValue.class);
         String fieldName = ip.getMember().getName();
-        return System.getenv().getOrDefault(fieldName, System.getProperty(fieldName, "!!!!"));
+        return System.getenv().getOrDefault(fieldName, System.getProperty(fieldName, defaultValue.value()));
     }
     @Produces
     public Long exposeLong(InjectionPoint ip) {
